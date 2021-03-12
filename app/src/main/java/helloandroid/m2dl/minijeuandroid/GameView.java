@@ -87,6 +87,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(backgroundPaint.getColor());
+            canvas.drawText("Score " + String.valueOf(score), width * 0.9f, height * 0.05f, new Paint() {{
+                setColor(Color.GRAY);
+                setTextSize(20);
+            }});
         }
     }
 

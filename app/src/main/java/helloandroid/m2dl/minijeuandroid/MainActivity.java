@@ -13,15 +13,13 @@ import androidx.annotation.RequiresApi;
 
 public class MainActivity extends Activity {
 
-    private SharedPreferences sharedPreferences;
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // SharedPreferences
-        sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Création des délimitations
