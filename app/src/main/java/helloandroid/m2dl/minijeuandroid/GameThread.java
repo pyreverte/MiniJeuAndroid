@@ -50,7 +50,7 @@ public class GameThread extends Thread {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setNewDirection() {
         switch (getZoneBalle()) {
-            case SOTH_EAST:
+            case SOUTH_EAST:
                 do {
                     this.direction_x = getRandomNumberInRange(-1, 0);
                     this.direction_y = getRandomNumberInRange(-1, 0);
@@ -84,7 +84,7 @@ public class GameThread extends Thread {
         } else if (this.gameView.getWidth() / 2.0 <= coordinates.first && coordinates.first < this.gameView.getWidth() && coordinates.second < this.gameView.getHeight() / 2.0) {
             return Zone.NORTH_EAST;
         } else if (this.gameView.getWidth() / 2.0 <= coordinates.first && coordinates.first < this.gameView.getWidth() && this.gameView.getHeight() / 2.0 <= coordinates.second && coordinates.second < this.gameView.getHeight()) {
-            return Zone.SOTH_EAST;
+            return Zone.SOUTH_EAST;
         } else {
             return Zone.SOUTH_WEST;
         }
