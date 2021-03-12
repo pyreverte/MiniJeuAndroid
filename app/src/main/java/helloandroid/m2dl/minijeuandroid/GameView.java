@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Build;
-import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -24,14 +21,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final int width;
     private final int height;
     private final GameThread thread;
-    private Handler handler;
+
+    private final SharedPreferences sharedPreferences;
+
+    private SystemTheme systemTheme;
+    private Paint cubePaint;
+    private Paint backgroundPaint;
 
     private int score;
-    private final SharedPreferences sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
+
+        setSystemTheme();
 
         this.score = 0;
 
@@ -45,7 +48,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         getHolder().addCallback(this);
 
-        this.thread = new GameThread(getHolder(), this, genererCoordonnees(height, width));
+        this.thread = new GameThread(getHolder(), this, genererCoordonnees(height, width), cubePaint);
         setFocusable(true);
     }
 
@@ -83,15 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
-            Rect r = new Rect();
-            r.left = width / 2;
-            r.top = height / 2;
-            r.right = width / 2;
-            r.bottom = height / 2;
-            Paint paint = new Paint();
-            paint.setColor(Color.rgb(0, 0, 255));
-            canvas.drawRect(r, paint);
+            canvas.drawColor(backgroundPaint.getColor());
         }
     }
 
@@ -111,7 +106,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean isCubeTouched(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
-
         return x <= thread.getCoordinates().first + 50 && x >= thread.getCoordinates().first - 50 && y <= thread.getCoordinates().second + 50 && y >= thread.getCoordinates().second - 50;
     }
 
@@ -120,5 +114,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         float posx = getRandomNumberInRange((int) Math.round(width * 0.2), (int) Math.round(width * 0.8));
         float posy = getRandomNumberInRange((int) Math.round(height * 0.2), (int) Math.round(height * 0.8));
         return new Pair<>(posx, posy);
+    }
+
+    public void setSystemTheme() {
+        this.systemTheme = SystemTheme.DARK;
+        switch (systemTheme) {
+            case DARK:
+                backgroundPaint = new Paint() {{
+                    setColor(Color.rgb(30, 30, 30));
+                }};
+                cubePaint = new Paint() {{
+                    setColor(Color.rgb(255, 255, 255));
+                }};
+                break;
+            case LIGHT:
+                backgroundPaint = new Paint() {{
+                    setColor(Color.rgb(255, 255, 255));
+                }};
+                cubePaint = new Paint() {{
+                    setColor(Color.rgb(0, 0, 0));
+                }};
+                break;
+        }
     }
 }

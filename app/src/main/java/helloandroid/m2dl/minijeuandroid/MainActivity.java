@@ -27,16 +27,9 @@ public class MainActivity extends Activity {
         // Création des délimitations
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
         editor.putInt("screen_height", displayMetrics.heightPixels);
         editor.putInt("screen_width", displayMetrics.widthPixels);
         editor.apply();
-
-        /*
-        int nb_lancements = sharedPreferences.getInt("nb_lancements", 0);
-        editor.putInt("nb_lancements", nb_lancements + 1);
-        editor.apply();
-        */
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -1,7 +1,6 @@
 package helloandroid.m2dl.minijeuandroid;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
@@ -14,67 +13,70 @@ import java.util.Random;
 
 public class GameThread extends Thread {
 
-    public void setCoordinates(Pair<Float, Float> coordinates) {
+    private final SurfaceHolder surfaceHolder;
+    private final GameView gameView;
+    private final long speed = 1;
+    private final int stride = 3;
+    private final double sqrt_semi = Math.sqrt(0.5);
+    private final Paint paint;
+    // first : width
+    // second : height
+    private Pair<Float, Float> coordinates;
+    private float direction_x;
+    private float direction_y;
+    private boolean running;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public GameThread(SurfaceHolder surfaceHolder, GameView gameView, Pair<Float, Float> coordinates, Paint paint) {
+        super();
+        this.surfaceHolder = surfaceHolder;
+        this.gameView = gameView;
         this.coordinates = coordinates;
+        this.paint = paint;
+        setNewDirection();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private static int getRandomNumberInRange(int min, int max) {
+        Random r = new Random();
+        return r.ints(min, (max + 1)).findFirst().getAsInt();
     }
 
     public Pair<Float, Float> getCoordinates() {
         return coordinates;
     }
 
-    // first : width
-    // second : height
-    private Pair<Float, Float> coordinates;
-
-    private float direction_x;
-
-    private float direction_y;
-
-    private final SurfaceHolder surfaceHolder;
-
-    private final GameView gameView;
-
-    private boolean running;
-
-    private final int speed = 10;
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public GameThread(SurfaceHolder surfaceHolder, GameView gameView, Pair<Float, Float> coordinates) {
-        super();
-        this.surfaceHolder = surfaceHolder;
-        this.gameView = gameView;
+    public void setCoordinates(Pair<Float, Float> coordinates) {
         this.coordinates = coordinates;
-        setNewDirection();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void setNewDirection() {
-        switch (getZoneBalle()) {
-            case SOUTH_EAST:
-                do {
+        Zone zone = getZoneBalle();
+        do {
+            switch (zone) {
+                case SOUTH_EAST:
                     this.direction_x = getRandomNumberInRange(-1, 0);
                     this.direction_y = getRandomNumberInRange(-1, 0);
-                } while (this.direction_x == 0 && this.direction_y == 0);
-                break;
-            case SOUTH_WEST:
-                do {
+                    break;
+                case SOUTH_WEST:
                     this.direction_x = getRandomNumberInRange(0, 1);
                     this.direction_y = getRandomNumberInRange(-1, 0);
-                } while (this.direction_x == 0 && this.direction_y == 0);
-                break;
-            case NORTH_EAST:
-                do {
+                    break;
+                case NORTH_EAST:
                     this.direction_x = getRandomNumberInRange(-1, 0);
                     this.direction_y = getRandomNumberInRange(0, 1);
-                } while (this.direction_x == 0 && this.direction_y == 0);
-                break;
-            case NORTH_WEST:
-                do {
+                    break;
+                case NORTH_WEST:
                     this.direction_x = getRandomNumberInRange(0, 1);
                     this.direction_y = getRandomNumberInRange(0, 1);
-                } while (this.direction_x == 0 && this.direction_y == 0);
-                break;
-            default:
+                    break;
+                default:
+            }
+        } while (this.direction_x == 0 && this.direction_y == 0);
+        if (this.direction_x != 0 && this.direction_y != 0) {
+            this.direction_x *= sqrt_semi;
+            this.direction_y *= sqrt_semi;
         }
     }
 
@@ -94,7 +96,7 @@ public class GameThread extends Thread {
     public void run() {
         while (running) {
             try {
-                Thread.sleep(1000 / speed);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -103,9 +105,7 @@ public class GameThread extends Thread {
                 canvas = surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
                     this.gameView.draw(canvas);
-                    Paint paint = new Paint();
-                    paint.setColor(Color.rgb(250, 0, 0));
-                    setCoordinates(new Pair<>(this.coordinates.first + direction_x, this.coordinates.second + direction_y));
+                    setCoordinates(new Pair<>(this.coordinates.first + direction_x * stride, this.coordinates.second + direction_y * stride));
                     Rect r = new Rect();
                     r.left = (int) (this.coordinates.first - 50);
                     r.top = (int) (this.coordinates.second - 50);
@@ -128,11 +128,5 @@ public class GameThread extends Thread {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static int getRandomNumberInRange(int min, int max) {
-        Random r = new Random();
-        return r.ints(min, (max + 1)).findFirst().getAsInt();
     }
 }
