@@ -1,8 +1,8 @@
 # MiniJeuAndroid
 
-Contributeurs
-- @pyreverte
-- @JakeSimmo
+## Contributeurs
+
+[@pyreverte](https://github.com/pyreverte) - [@JakeSimmo](https://github.com/JakeSimmo)
 
 ## Utilisation Capteurs
 
