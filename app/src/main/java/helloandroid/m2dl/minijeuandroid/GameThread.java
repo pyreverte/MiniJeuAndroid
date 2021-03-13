@@ -123,10 +123,34 @@ public class GameThread extends Thread {
                     }
                 }
             }
+            if (isOutOfBounds()){
+                gameView.endGame();
+            }
         }
     }
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    private boolean isOutOfBounds() {
+        int west_border = 50;
+        int east_border = gameView.getWidth() - 50;
+        int north_border = 50;
+        int south_border = gameView.getHeight() - 50;
+
+        int posx = Math.round(coordinates.first);
+        int posy = Math.round(coordinates.second);
+        ;
+
+        if (posx <= west_border || posx >= east_border) {
+            return true;
+        }
+
+        if (posy <= north_border || posy >= south_border) {
+            return true;
+        }
+
+        return false;
     }
 }
