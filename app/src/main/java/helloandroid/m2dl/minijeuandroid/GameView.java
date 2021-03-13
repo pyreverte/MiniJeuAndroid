@@ -16,14 +16,15 @@ import androidx.annotation.RequiresApi;
 
 import java.util.Random;
 
+import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private final int width;
     private final int height;
     private final GameThread thread;
-
     private final SharedPreferences sharedPreferences;
-
+    private GameActivity activity;
     private SystemTheme systemTheme;
     private Paint cubePaint;
     private Paint backgroundPaint;
@@ -31,16 +32,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int score;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public GameView(Context context, SharedPreferences sharedPreferences) {
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
         super(context);
-
+        this.activity = activity;
         setSystemTheme();
 
         this.score = 0;
 
         this.sharedPreferences = sharedPreferences;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("score", 0);
+        editor.putInt("last_score", 0);
         editor.apply();
 
         this.height = sharedPreferences.getInt("screen_height", 0);
@@ -101,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             score++;
             thread.setNewDirection();
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("score", score);
+            editor.putInt("last_score", score);
             editor.apply();
         }
         return super.onTouchEvent(event);
@@ -140,5 +141,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }};
                 break;
         }
+    }
+
+    public void endGame() {
+        thread.setRunning(false);
+        recordScore();
+        activity.toScoreActivity();
+    }
+
+    private void recordScore() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("last_score", score);
+        editor.apply();
+
+        // Enregistrement en BD
+        // TODO
     }
 }

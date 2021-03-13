@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MiniJeuAndroid</string>
+    <string name="defeat_message">You lost !</string>
+    <string name="retry_button_text">Retry</string>
+    <string name="mainmenu_button_text">MainMenu</string>
+    <string name="score_text">Score :</string>
 </resources>

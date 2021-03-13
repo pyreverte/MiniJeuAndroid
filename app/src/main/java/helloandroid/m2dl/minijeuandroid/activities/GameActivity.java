@@ -1,7 +1,8 @@
-package helloandroid.m2dl.minijeuandroid;
+package helloandroid.m2dl.minijeuandroid.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
-public class MainActivity extends Activity {
+import helloandroid.m2dl.minijeuandroid.GameView;
+
+public class GameActivity extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -32,6 +35,13 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(new GameView(this, sharedPreferences));
+        setContentView(new GameView(this, sharedPreferences, this));
+    }
+
+    public void toScoreActivity() {
+        Intent i = new Intent(this, ScoreActivity.class);
+        startActivity(i);
+        // close this activity
+        finish();
     }
 }
