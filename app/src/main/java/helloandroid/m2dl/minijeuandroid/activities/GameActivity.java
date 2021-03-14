@@ -22,7 +22,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         // SharedPreferences
-        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         // Création des délimitations
