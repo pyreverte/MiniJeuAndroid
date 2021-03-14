@@ -13,7 +13,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
+import java.util.UUID;
+
 import helloandroid.m2dl.minijeuandroid.R;
+import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class MenuActivity extends Activity {
 
@@ -21,7 +28,7 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
+        login();
         setHighScore();
 
         final Button newGameButton = findViewById(R.id.new_game_button);
@@ -58,6 +65,12 @@ public class MenuActivity extends Activity {
                 textViewHighScore.setText(String.valueOf(highScore));
             }
         });
+    }
 
+    private void login() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+        myRef.child("yeet").push().setValue("hello world!");
+        myRef.child("logins").child("date").push().setValue(new Date());
     }
 }
