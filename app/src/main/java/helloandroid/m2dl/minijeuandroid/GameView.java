@@ -14,9 +14,15 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -155,6 +161,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         editor.apply();
 
         // Enregistrement en BD
-        // TODO
+        // Write a message to the database
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+
+        Score scoreObject = new Score("John Doe", score, new Date());
+        myRef.child("scores").push().setValue(scoreObject);
     }
 }
