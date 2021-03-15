@@ -30,7 +30,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private int score;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public GameView(Context context, SharedPreferences sharedPreferences) {
         super(context);
 
@@ -52,7 +51,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private static int getRandomNumberInRange(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -90,7 +88,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isCubeTouched(event)) {
@@ -109,7 +106,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return x <= thread.getCoordinates().first + 50 && x >= thread.getCoordinates().first - 50 && y <= thread.getCoordinates().second + 50 && y >= thread.getCoordinates().second - 50;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private Pair<Float, Float> genererCoordonnees(int height, int width) {
         float posx = getRandomNumberInRange((int) Math.round(width * 0.2), (int) Math.round(width * 0.8));
         float posy = getRandomNumberInRange((int) Math.round(height * 0.2), (int) Math.round(height * 0.8));
