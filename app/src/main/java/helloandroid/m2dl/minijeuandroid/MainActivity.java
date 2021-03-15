@@ -15,7 +15,6 @@ public class MainActivity extends Activity {
 
     private SharedPreferences sharedPreferences;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
