@@ -54,7 +54,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static int getRandomNumberInRange(int min, int max) {
-        return new Random().ints(min, (max + 1)).findFirst().getAsInt();
+        return (int) ((Math.random() * (max - min)) + min);
     }
 
     @Override
