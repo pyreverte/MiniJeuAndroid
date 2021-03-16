@@ -54,14 +54,12 @@ public class ScoreActivity extends FragmentActivity {
             editor.apply();
         }
 
+        recordScore();
+
         // Reset Score
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("last_score", 0);
         editor.apply();
-
-        // Save Score Button
-        final Button saveScoreButton = findViewById(R.id.saveScoreButton);
-        saveScoreButton.setOnClickListener(v -> recordScore());
 
         // Retry Button
         final Button retryButton = findViewById(R.id.retryButton);
@@ -92,7 +90,6 @@ public class ScoreActivity extends FragmentActivity {
     }
 
     private void recordScore() {
-
 
         // Enregistrement en BD
         // Write a message to the database
