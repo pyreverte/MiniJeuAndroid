@@ -1,4 +1,4 @@
-package helloandroid.m2dl.minijeuandroid;
+package helloandroid.m2dl.minijeuandroid.activities.game;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+import helloandroid.m2dl.minijeuandroid.models.SystemTheme;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 

@@ -1,4 +1,4 @@
-package helloandroid.m2dl.minijeuandroid.data;
+package helloandroid.m2dl.minijeuandroid.models;
 
 public class Score {
 
