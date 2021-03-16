@@ -3,11 +3,8 @@ package helloandroid.m2dl.minijeuandroid;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.Pair;
 import android.view.SurfaceHolder;
-
-import androidx.annotation.RequiresApi;
 
 import java.util.Random;
 
