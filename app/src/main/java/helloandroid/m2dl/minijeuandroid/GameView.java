@@ -12,32 +12,33 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
-import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final int width;
-    private final int height;
-    private final GameThread thread;
-    private final SharedPreferences sharedPreferences;
-
-    private final GameActivity activity;
-
+    private int screenWidth;
+    private int screenHeight;
+    private GameThread thread;
+    private SharedPreferences sharedPreferences;
+    private GameActivity activity;
+    private int borderWidth;
     private Paint cubePaint;
     private Paint backgroundPaint;
-
     private int score;
 
-    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
+    public int getScreenWidth() {
+        return screenWidth;
+    }
 
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public GameView(Context context) {
+        super(context);
+    }
+
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
         super(context);
         this.activity = activity;
         setSystemTheme();
@@ -49,12 +50,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         editor.putInt("last_score", 0);
         editor.apply();
 
-        this.height = sharedPreferences.getInt("screen_height", 0);
-        this.width = sharedPreferences.getInt("screen_width", 0);
+        this.screenHeight = sharedPreferences.getInt("screen_height", 0);
+        this.screenWidth = sharedPreferences.getInt("screen_width", 0);
 
+        this.borderWidth = (int) Math.round(0.0625 * screenWidth);
         getHolder().addCallback(this);
 
-        this.thread = new GameThread(getHolder(), this, genererCoordonnees(height, width), cubePaint);
+        this.thread = new GameThread(getHolder(), this, genererCoordonnees(screenHeight, screenWidth), cubePaint);
         setFocusable(true);
     }
 
@@ -92,7 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(backgroundPaint.getColor());
-            canvas.drawText("Score " + String.valueOf(score), width * 0.8f, height * 0.05f, new Paint() {{
+            canvas.drawText("Score " + String.valueOf(score), screenWidth * 0.8f, screenHeight * 0.05f, new Paint() {{
                 setColor(Color.GRAY);
                 setTextSize(20);
             }});
@@ -114,7 +116,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean isCubeTouched(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
-        return x <= thread.getCoordinates().first + 50 && x >= thread.getCoordinates().first - 50 && y <= thread.getCoordinates().second + 50 && y >= thread.getCoordinates().second - 50;
+        return x <= thread.getCoordinates().first + borderWidth + 0.25 * borderWidth
+                && x >= thread.getCoordinates().first - borderWidth - 0.25 * borderWidth
+                && y <= thread.getCoordinates().second + borderWidth + 0.25 * borderWidth
+                && y >= thread.getCoordinates().second - borderWidth - 0.25 * borderWidth;
     }
 
     private Pair<Float, Float> genererCoordonnees(int height, int width) {
@@ -147,25 +152,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void endGame() {
         thread.setRunning(false);
-        recordScore();
         activity.toScoreActivity();
-    }
-
-    private void recordScore() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("last_score", score);
-        editor.apply();
-
-        // Enregistrement en BD
-        // Write a message to the database
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
-
-        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("fr", "FR"));
-        String formattedDate = df.format(new Date());
-
-        Score scoreObject = new Score("John Doe", score, formattedDate);
-        myRef.child("scores").push().setValue(scoreObject);
     }
 }
