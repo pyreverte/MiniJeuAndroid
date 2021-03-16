@@ -5,41 +5,51 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import java.util.Random;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private final int width;
     private final int height;
     private final GameThread thread;
-
     private final SharedPreferences sharedPreferences;
+
+    private final GameActivity activity;
 
     private SystemTheme systemTheme;
     private Paint cubePaint;
     private Paint backgroundPaint;
 
+    private int highScore;
+
     private int score;
 
-    public GameView(Context context, SharedPreferences sharedPreferences) {
-        super(context);
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
 
+        super(context);
+        this.activity = activity;
         setSystemTheme();
 
         this.score = 0;
 
         this.sharedPreferences = sharedPreferences;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("score", 0);
+        editor.putInt("last_score", 0);
         editor.apply();
 
         this.height = sharedPreferences.getInt("screen_height", 0);
@@ -85,6 +95,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(backgroundPaint.getColor());
+            canvas.drawText("Score " + String.valueOf(score), width * 0.9f, height * 0.05f, new Paint() {{
+                setColor(Color.GRAY);
+                setTextSize(20);
+            }});
         }
     }
 
@@ -94,7 +108,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             score++;
             thread.setNewDirection();
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("score", score);
+            editor.putInt("last_score", score);
             editor.apply();
         }
         return super.onTouchEvent(event);
@@ -113,7 +127,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void setSystemTheme() {
-        this.systemTheme = SystemTheme.DARK;
+        SystemTheme systemTheme = SystemTheme.DARK;
         switch (systemTheme) {
             case DARK:
                 backgroundPaint = new Paint() {{
@@ -132,5 +146,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }};
                 break;
         }
+    }
+
+    public void endGame() {
+        thread.setRunning(false);
+        recordScore();
+        activity.toScoreActivity();
+    }
+
+    private void recordScore() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("last_score", score);
+        editor.apply();
+
+        // Enregistrement en BD
+        // Write a message to the database
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
+
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("fr", "FR"));
+        String formattedDate = df.format(new Date());
+
+        Score scoreObject = new Score("John Doe", score, formattedDate);
+        myRef.child("scores").push().setValue(scoreObject);
     }
 }
