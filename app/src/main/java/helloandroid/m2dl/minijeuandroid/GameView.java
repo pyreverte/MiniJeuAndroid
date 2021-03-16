@@ -40,6 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int score;
 
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
+
         super(context);
         this.activity = activity;
         setSystemTheme();
