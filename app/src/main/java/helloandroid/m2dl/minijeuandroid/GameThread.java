@@ -66,7 +66,7 @@ public class GameThread extends Thread {
                     break;
                 case NORTH_WEST:
                     this.direction_x = getRandomNumberInRange(new int[]{1, 0});
-                    this.direction_y = getRandomNumberInRange(new int[]{-1, 0});
+                    this.direction_y = getRandomNumberInRange(new int[]{1, 0});
                     break;
                 default:
             }

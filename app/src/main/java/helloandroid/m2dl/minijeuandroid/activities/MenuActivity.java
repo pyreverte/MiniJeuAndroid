@@ -30,6 +30,7 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+
         final Button newGameButton = findViewById(R.id.new_game_button);
         newGameButton.setOnClickListener(v -> toGameActivity());
 
@@ -77,7 +78,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                highScore = dataSnapshot.getValue(Integer.class);
+                highScore = dataSnapshot.getValue(Integer.class).intValue();
                 TextView textViewHighScore = findViewById(R.id.high_score_value);
                 runOnUiThread(() -> textViewHighScore.setText(String.valueOf(highScore)));
             }
@@ -89,14 +90,5 @@ public class MenuActivity extends Activity {
             }
         };
         high_score_ref.addValueEventListener(scoreListener);
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
-        int highScore = sharedPreferences.getInt("high_score", 0);
-        TextView textViewHighScore = findViewById(R.id.high_score_value);
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                textViewHighScore.setText(String.valueOf(highScore));
-            }
-        });
     }
 }

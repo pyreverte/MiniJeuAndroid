@@ -102,6 +102,9 @@ public class ScoreActivity extends FragmentActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 highScore = dataSnapshot.getValue(Integer.class);
+                if (score > highScore) {
+                    myRef.child("high_score").setValue(score);
+                }
             }
 
             @Override
@@ -111,9 +114,7 @@ public class ScoreActivity extends FragmentActivity {
             }
         };
         high_score_ref.addValueEventListener(scoreListener);
-        if (score > highScore) {
-            myRef.child("high_score").setValue(score);
-        }
+
         DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
         Score scoreObject = new Score(getPlayerName(), score, mediumDateFormat.format(new Date()));
         myRef.child("scores").push().setValue(scoreObject);
