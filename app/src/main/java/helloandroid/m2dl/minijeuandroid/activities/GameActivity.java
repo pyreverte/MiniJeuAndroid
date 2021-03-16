@@ -16,11 +16,9 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // SharedPreferences
         SharedPreferences sharedPreferences = this.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Création des délimitations
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -29,7 +27,6 @@ public class GameActivity extends Activity {
         editor.putInt("screen_height", height);
         editor.putInt("screen_width", width);
         editor.apply();
-
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(new GameView(this, sharedPreferences, this));
