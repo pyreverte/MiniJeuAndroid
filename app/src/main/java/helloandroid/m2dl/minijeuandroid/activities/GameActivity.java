@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Window;
 
-import helloandroid.m2dl.minijeuandroid.GameView;
+import helloandroid.m2dl.minijeuandroid.activities.game.GameView;
 
 public class GameActivity extends Activity {
 

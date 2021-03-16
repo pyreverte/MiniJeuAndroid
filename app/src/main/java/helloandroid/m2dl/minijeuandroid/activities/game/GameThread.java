@@ -1,4 +1,4 @@
-package helloandroid.m2dl.minijeuandroid;
+package helloandroid.m2dl.minijeuandroid.activities.game;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,6 +7,8 @@ import android.util.Pair;
 import android.view.SurfaceHolder;
 
 import java.util.Random;
+
+import helloandroid.m2dl.minijeuandroid.models.Zone;
 
 public class GameThread extends Thread {
 

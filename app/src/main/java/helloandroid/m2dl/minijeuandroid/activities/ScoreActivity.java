@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import helloandroid.m2dl.minijeuandroid.R;
-import helloandroid.m2dl.minijeuandroid.data.Score;
+import helloandroid.m2dl.minijeuandroid.models.Score;
 
 public class ScoreActivity extends FragmentActivity {
 
