@@ -9,25 +9,13 @@ public class Score {
 
     public String username;
     public int score;
-    public Date date;
+    public String date;
 
     public Score() {
 
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public Score(String username, int score, Date date) {
+    public Score(String username, int score, String date) {
         this.username = username;
         this.score = score;
         this.date = date;

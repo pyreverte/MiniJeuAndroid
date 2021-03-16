@@ -14,15 +14,7 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
-
 import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
-import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -30,10 +22,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final int height;
     private final GameThread thread;
     private final SharedPreferences sharedPreferences;
-    private GameActivity activity;
-    private SystemTheme systemTheme;
+    private final GameActivity activity;
     private Paint cubePaint;
     private Paint backgroundPaint;
+
+    private int highScore;
 
     private int score;
 
@@ -128,7 +121,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void setSystemTheme() {
-        this.systemTheme = SystemTheme.DARK;
+        SystemTheme systemTheme = SystemTheme.DARK;
         switch (systemTheme) {
             case DARK:
                 backgroundPaint = new Paint() {{
@@ -151,22 +144,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void endGame() {
         thread.setRunning(false);
-        recordScore();
         activity.toScoreActivity();
     }
 
-    private void recordScore() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("last_score", score);
-        editor.apply();
 
-        // Enregistrement en BD
-        // Write a message to the database
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
 
-        Score scoreObject = new Score("John Doe", score, new Date());
-        myRef.child("scores").push().setValue(scoreObject);
-    }
 }

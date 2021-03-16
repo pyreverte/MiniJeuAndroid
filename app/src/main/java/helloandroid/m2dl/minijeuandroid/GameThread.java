@@ -113,7 +113,7 @@ public class GameThread extends Thread {
                     r.bottom = (int) (this.coordinates.second + 50);
                     canvas.drawRect(r, paint);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             } finally {
                 if (canvas != null) {
                     try {
@@ -123,7 +123,7 @@ public class GameThread extends Thread {
                     }
                 }
             }
-            if (isOutOfBounds()){
+            if (isOutOfBounds()) {
                 gameView.endGame();
             }
         }
