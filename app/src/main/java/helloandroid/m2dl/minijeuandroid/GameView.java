@@ -5,16 +5,22 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -22,7 +28,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final int height;
     private final GameThread thread;
     private final SharedPreferences sharedPreferences;
+
     private final GameActivity activity;
+
+    private SystemTheme systemTheme;
     private Paint cubePaint;
     private Paint backgroundPaint;
 
@@ -30,7 +39,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private int score;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
         super(context);
         this.activity = activity;
@@ -52,7 +60,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private static int getRandomNumberInRange(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -94,7 +101,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isCubeTouched(event)) {
@@ -113,7 +119,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return x <= thread.getCoordinates().first + 50 && x >= thread.getCoordinates().first - 50 && y <= thread.getCoordinates().second + 50 && y >= thread.getCoordinates().second - 50;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private Pair<Float, Float> genererCoordonnees(int height, int width) {
         float posx = getRandomNumberInRange((int) Math.round(width * 0.2), (int) Math.round(width * 0.8));
         float posy = getRandomNumberInRange((int) Math.round(height * 0.2), (int) Math.round(height * 0.8));
@@ -144,10 +149,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void endGame() {
         thread.setRunning(false);
+        recordScore();
         activity.toScoreActivity();
     }
 
+    private void recordScore() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("last_score", score);
+        editor.apply();
 
+        // Enregistrement en BD
+        // Write a message to the database
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
 
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("fr", "FR"));
+        String formattedDate = df.format(new Date());
+
+        Score scoreObject = new Score("John Doe", score, formattedDate);
+        myRef.child("scores").push().setValue(scoreObject);
+    }
 }

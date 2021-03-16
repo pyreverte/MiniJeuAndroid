@@ -26,7 +26,6 @@ public class GameThread extends Thread {
     private float direction_y;
     private boolean running;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public GameThread(SurfaceHolder surfaceHolder, GameView gameView, Pair<Float, Float> coordinates, Paint paint) {
         super();
         this.surfaceHolder = surfaceHolder;
@@ -36,10 +35,9 @@ public class GameThread extends Thread {
         setNewDirection();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private static int getRandomNumberInRange(int min, int max) {
-        Random r = new Random();
-        return r.ints(min, (max + 1)).findFirst().getAsInt();
+    private static int getRandomNumberInRange(int[] array) {
+        int rnd = new Random().nextInt(array.length);
+        return array[rnd];
     }
 
     public Pair<Float, Float> getCoordinates() {
@@ -50,26 +48,25 @@ public class GameThread extends Thread {
         this.coordinates = coordinates;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setNewDirection() {
         Zone zone = getZoneBalle();
         do {
             switch (zone) {
                 case SOUTH_EAST:
-                    this.direction_x = getRandomNumberInRange(-1, 0);
-                    this.direction_y = getRandomNumberInRange(-1, 0);
+                    this.direction_x = getRandomNumberInRange(new int[]{-1, 0});
+                    this.direction_y = getRandomNumberInRange(new int[]{-1, 0});
                     break;
                 case SOUTH_WEST:
-                    this.direction_x = getRandomNumberInRange(0, 1);
-                    this.direction_y = getRandomNumberInRange(-1, 0);
+                    this.direction_x = getRandomNumberInRange(new int[]{1, 0});
+                    this.direction_y = getRandomNumberInRange(new int[]{-1, 0});
                     break;
                 case NORTH_EAST:
-                    this.direction_x = getRandomNumberInRange(-1, 0);
-                    this.direction_y = getRandomNumberInRange(0, 1);
+                    this.direction_x = getRandomNumberInRange(new int[]{-1, 0});
+                    this.direction_y = getRandomNumberInRange(new int[]{1, 0});
                     break;
                 case NORTH_WEST:
-                    this.direction_x = getRandomNumberInRange(0, 1);
-                    this.direction_y = getRandomNumberInRange(0, 1);
+                    this.direction_x = getRandomNumberInRange(new int[]{1, 0});
+                    this.direction_y = getRandomNumberInRange(new int[]{-1, 0});
                     break;
                 default:
             }

@@ -1,20 +1,15 @@
 package helloandroid.m2dl.minijeuandroid.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.icu.text.TimeZoneFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,10 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
-import java.util.UUID;
 
 import helloandroid.m2dl.minijeuandroid.R;
-import helloandroid.m2dl.minijeuandroid.data.Score;
 
 public class MenuActivity extends Activity {
 
@@ -51,6 +44,22 @@ public class MenuActivity extends Activity {
     protected void onStart() {
         super.onStart();
         setHighScore();
+
+        final Button newGameButton = findViewById(R.id.new_game_button);
+        newGameButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                toGameActivity();
+            }
+        });
+
+        Button quitButton = findViewById(R.id.quit_button);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                System.exit(0);
+            }
+        });
     }
 
     public void toGameActivity() {
@@ -80,5 +89,14 @@ public class MenuActivity extends Activity {
             }
         };
         high_score_ref.addValueEventListener(scoreListener);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
+        int highScore = sharedPreferences.getInt("high_score", 0);
+        TextView textViewHighScore = findViewById(R.id.high_score_value);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textViewHighScore.setText(String.valueOf(highScore));
+            }
+        });
     }
 }

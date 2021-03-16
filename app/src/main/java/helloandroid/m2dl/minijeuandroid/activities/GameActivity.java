@@ -4,19 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
-
-import androidx.annotation.RequiresApi;
+import android.view.WindowMetrics;
 
 import helloandroid.m2dl.minijeuandroid.GameView;
 
 public class GameActivity extends Activity {
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +26,14 @@ public class GameActivity extends Activity {
         // Création des délimitations
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        editor.putInt("screen_height", displayMetrics.heightPixels);
-        editor.putInt("screen_width", displayMetrics.widthPixels);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+        editor.putInt("screen_height", height);
+        editor.putInt("screen_width", width);
         editor.apply();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(new GameView(this, sharedPreferences, this));
     }
