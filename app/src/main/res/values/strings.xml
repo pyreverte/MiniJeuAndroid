@@ -10,4 +10,7 @@
     <string name="quit">Quit</string>
     <string name="database_url">https://minijeuandroid-default-rtdb.europe-west1.firebasedatabase.app/</string>
     <string name="save_score">Save Score</string>
+    <string name="your_name">Your name:</string>
+    <string name="score_already_saved">Score already saved</string>
+    <string name="no_internet_connection">Not connected to internet</string>
 </resources>
