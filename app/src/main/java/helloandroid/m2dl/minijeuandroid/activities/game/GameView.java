@@ -117,10 +117,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean isCubeTouched(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
-        return x <= thread.getCoordinates().first + borderWidth + 0.25 * borderWidth
-                && x >= thread.getCoordinates().first - borderWidth - 0.25 * borderWidth
-                && y <= thread.getCoordinates().second + borderWidth + 0.25 * borderWidth
-                && y >= thread.getCoordinates().second - borderWidth - 0.25 * borderWidth;
+        return x <= thread.getCoordinates().first + borderWidth + 0.50 * borderWidth
+                && x >= thread.getCoordinates().first - borderWidth - 0.50 * borderWidth
+                && y <= thread.getCoordinates().second + borderWidth + 0.50 * borderWidth
+                && y >= thread.getCoordinates().second - borderWidth - 0.50 * borderWidth;
     }
 
     private Pair<Float, Float> genererCoordonnees(int height, int width) {

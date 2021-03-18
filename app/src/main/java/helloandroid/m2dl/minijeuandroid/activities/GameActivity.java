@@ -19,6 +19,8 @@ public class GameActivity extends Activity {
         SharedPreferences sharedPreferences = this.getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        resetScore(sharedPreferences);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -37,5 +39,11 @@ public class GameActivity extends Activity {
         startActivity(i);
         // close this activity
         finish();
+    }
+
+    private void resetScore(SharedPreferences sharedPreferences) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("last_score", 0);
+        editor.apply();
     }
 }
