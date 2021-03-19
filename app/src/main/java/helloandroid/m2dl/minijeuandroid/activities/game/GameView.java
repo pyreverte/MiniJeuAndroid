@@ -1,58 +1,66 @@
-package helloandroid.m2dl.minijeuandroid;
+package helloandroid.m2dl.minijeuandroid.activities.game;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import java.util.Random;
+import helloandroid.m2dl.minijeuandroid.activities.GameActivity;
+import helloandroid.m2dl.minijeuandroid.models.SystemTheme;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final int width;
-    private final int height;
-    private final GameThread thread;
-
-    private final SharedPreferences sharedPreferences;
-
-    private SystemTheme systemTheme;
+    private int screenWidth;
+    private int screenHeight;
+    private GameThread thread;
+    private SharedPreferences sharedPreferences;
+    private GameActivity activity;
+    private int borderWidth;
     private Paint cubePaint;
     private Paint backgroundPaint;
-
     private int score;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public GameView(Context context, SharedPreferences sharedPreferences) {
-        super(context);
+    public int getScreenWidth() {
+        return screenWidth;
+    }
 
-        setSystemTheme();
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public GameView(Context context) {
+        super(context);
+    }
+
+    public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
+        super(context);
+        this.activity = activity;
+        setSystemTheme(SystemTheme.LIGHT);
 
         this.score = 0;
 
         this.sharedPreferences = sharedPreferences;
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("score", 0);
+        editor.putInt("last_score", 0);
         editor.apply();
 
-        this.height = sharedPreferences.getInt("screen_height", 0);
-        this.width = sharedPreferences.getInt("screen_width", 0);
+        this.screenHeight = sharedPreferences.getInt("screen_height", 0);
+        this.screenWidth = sharedPreferences.getInt("screen_width", 0);
 
+        this.borderWidth = (int) Math.round(0.0625 * screenWidth);
         getHolder().addCallback(this);
 
-        this.thread = new GameThread(getHolder(), this, genererCoordonnees(height, width), cubePaint);
+        this.thread = new GameThread(getHolder(), this, genererCoordonnees(screenHeight, screenWidth), cubePaint);
         setFocusable(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private static int getRandomNumberInRange(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -87,17 +95,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(backgroundPaint.getColor());
+            canvas.drawText("Score " + String.valueOf(score), screenWidth * 0.8f, screenHeight * 0.05f, new Paint() {{
+                setColor(Color.GRAY);
+                setTextSize(20);
+            }});
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isCubeTouched(event)) {
             score++;
             thread.setNewDirection();
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt("score", score);
+            editor.putInt("last_score", score);
             editor.apply();
         }
         return super.onTouchEvent(event);
@@ -106,25 +117,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean isCubeTouched(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
-        return x <= thread.getCoordinates().first + 50 && x >= thread.getCoordinates().first - 50 && y <= thread.getCoordinates().second + 50 && y >= thread.getCoordinates().second - 50;
+        return x <= thread.getCoordinates().first + borderWidth + 0.50 * borderWidth
+                && x >= thread.getCoordinates().first - borderWidth - 0.50 * borderWidth
+                && y <= thread.getCoordinates().second + borderWidth + 0.50 * borderWidth
+                && y >= thread.getCoordinates().second - borderWidth - 0.50 * borderWidth;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private Pair<Float, Float> genererCoordonnees(int height, int width) {
         float posx = getRandomNumberInRange((int) Math.round(width * 0.2), (int) Math.round(width * 0.8));
         float posy = getRandomNumberInRange((int) Math.round(height * 0.2), (int) Math.round(height * 0.8));
         return new Pair<>(posx, posy);
     }
 
-    public void setSystemTheme() {
-        this.systemTheme = SystemTheme.DARK;
+    public void setSystemTheme(SystemTheme systemTheme) {
         switch (systemTheme) {
             case DARK:
                 backgroundPaint = new Paint() {{
                     setColor(Color.rgb(30, 30, 30));
                 }};
                 cubePaint = new Paint() {{
-                    setColor(Color.rgb(255, 255, 255));
+                    setColor(Color.rgb(120, 120, 120));
                 }};
                 break;
             case LIGHT:
@@ -132,9 +144,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     setColor(Color.rgb(255, 255, 255));
                 }};
                 cubePaint = new Paint() {{
-                    setColor(Color.rgb(0, 0, 0));
+                    setColor(Color.rgb(120, 120, 120));
                 }};
                 break;
         }
+    }
+
+    public void endGame() {
+        thread.setRunning(false);
+        activity.toScoreActivity();
     }
 }

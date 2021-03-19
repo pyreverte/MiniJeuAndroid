@@ -1,6 +1,4 @@
-package helloandroid.m2dl.minijeuandroid;
-
-import java.util.Random;
+package helloandroid.m2dl.minijeuandroid.models;
 
 public enum Zone {
     NORTH_WEST,
