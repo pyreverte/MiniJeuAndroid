@@ -42,7 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context, SharedPreferences sharedPreferences, GameActivity activity) {
         super(context);
         this.activity = activity;
-        setSystemTheme();
+        setSystemTheme(SystemTheme.LIGHT);
 
         this.score = 0;
 
@@ -129,15 +129,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return new Pair<>(posx, posy);
     }
 
-    public void setSystemTheme() {
-        SystemTheme systemTheme = SystemTheme.DARK;
+    public void setSystemTheme(SystemTheme systemTheme) {
         switch (systemTheme) {
             case DARK:
                 backgroundPaint = new Paint() {{
                     setColor(Color.rgb(30, 30, 30));
                 }};
                 cubePaint = new Paint() {{
-                    setColor(Color.rgb(255, 255, 255));
+                    setColor(Color.rgb(120, 120, 120));
                 }};
                 break;
             case LIGHT:
@@ -145,7 +144,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     setColor(Color.rgb(255, 255, 255));
                 }};
                 cubePaint = new Paint() {{
-                    setColor(Color.rgb(0, 0, 0));
+                    setColor(Color.rgb(120, 120, 120));
                 }};
                 break;
         }

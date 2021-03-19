@@ -37,8 +37,6 @@ public class MenuActivity extends Activity {
     public void toGameActivity() {
         Intent i = new Intent(this, GameActivity.class);
         startActivity(i);
-        // close this activity
-        finish();
     }
 
     private void setHighScore() {

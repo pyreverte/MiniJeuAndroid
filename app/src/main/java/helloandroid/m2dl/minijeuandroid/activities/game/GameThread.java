@@ -1,13 +1,20 @@
 package helloandroid.m2dl.minijeuandroid.activities.game;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.util.Log;
 import android.util.Pair;
 import android.view.SurfaceHolder;
 
 import java.util.Random;
 
+import helloandroid.m2dl.minijeuandroid.models.SystemTheme;
 import helloandroid.m2dl.minijeuandroid.models.Zone;
 
 public class GameThread extends Thread {
@@ -106,6 +113,7 @@ public class GameThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            checkTheme();
             Canvas canvas = null;
             try {
                 canvas = surfaceHolder.lockCanvas();
@@ -138,6 +146,42 @@ public class GameThread extends Thread {
     public void setRunning(boolean running) {
         this.running = running;
     }
+
+    public void checkTheme() {
+        SensorManager mySensorManager = (SensorManager)gameView.getContext().getSystemService(Context.SENSOR_SERVICE);
+        Sensor lightSensor = mySensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if(lightSensor != null){
+            mySensorManager.registerListener(
+                    lightSensorListener,
+                    lightSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+
+        }
+    }
+
+    private final SensorEventListener lightSensorListener
+            = new SensorEventListener(){
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if(event.sensor.getType() == Sensor.TYPE_LIGHT){
+                if (event.values[0] < 10) {
+                    gameView.setSystemTheme(SystemTheme.DARK);
+                }
+                else {
+                    gameView.setSystemTheme(SystemTheme.LIGHT);
+                }
+            }
+        }
+
+    };
+
 
     private boolean isOutOfBounds() {
         int west_border = borderWidth;
