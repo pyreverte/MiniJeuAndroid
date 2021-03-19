@@ -128,7 +128,6 @@ public class ScoreActivity extends FragmentActivity {
     }
 
     public void toMenuActivity() {
-        startActivity(new Intent(this, MenuActivity.class));
         finish();
     }
 
